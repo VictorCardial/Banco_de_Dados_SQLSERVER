@@ -25,7 +25,7 @@ estarão disponíveis ou não.
 ```
 A Segurança em nível de linha permite usar o contexto de execução ou a associação de grupo para controlar
 restrições de acesso a linhas de dados. Nesse projeto utilizamos o predicado de filtro de segurança. A 
-lógica dessa restrição de acesso é localizadana camada de banco de dados, em vez de longe dos dados em 
+lógica dessa restrição de acesso é localizada na camada de banco de dados, em vez de longe dos dados em 
 outra camada de aplicativo. O sistema de banco de dados aplica as restrições de acesso toda vez que há 
 tentativa de acesso a dados a partir de qualquer camada; isso torna o sistema de segurança mais robusto e 
 confiável, reduzindo a área de superfície do sistema de segurança.
