@@ -1,44 +1,36 @@
- # Tópicos Avançados de Banco de Dados
+## Consentimento de menores de idade: anexar autorização dos pais ou responsável legal ou documento comprovante de emancipação, feito no banco (flag menor de idade).
  
-  ```
+  
  Artigo acadêmico desenvolvido para a matéria de Tópicos Avançados de Banco de Dados ministrada pelo 
  professor Eduardo Sakaue na FATEC São José dos Campos - Prof. Jessen Vidal.
-  ```
  
- #### Contexto de aplicação
  
- ```
-Conforme o consentimento ou não, por parte dos usuários, seus dados pessoais se tornam disponíveis, ou não,
-para o tratamento por parte dos administradores desta base de dados, na qual a política de segurança
-aplicada a nível de usuário leva em consideração o campo Flag da tabela de clientes para habilitar a
-visualização e manipulação dos dados. O valor 1 no campo Flag indica o consentimento por parte do usuário,
-já o valor 0 presente neste campo indica a revogação deste consentimento.
+ 
+ ### Alteração DDL (Data Definition Language) 
+ 
+ 
+Para realizarmos o exercício da tratativa de dados perante o consentimento de menores de idade, adaptamos a base de dados padrão (Northwind) para que obtivéssemos clientes não somente jurídicos, mas também físicos.
 
-A política de segurança concede direitos totais aos “owners” (donos) da base de dados, não sendo aplicada a
-eles, aos demais a mesma é aplicada normalmente e dependendo do valor presente no campo flag, os dados
-estarão disponíveis ou não.
+Dentre as modificações realizadas no DDL da base de dados estão a adição de duas tabelas: Company (CustomerID, CNPJ, flag) e People (CustomerID, CPF, CNH, PIS, VoterIdentification, BirthDate, documento, flag_documento), que passam a ser identidade fraca da tabela Customer (CustomerID, Name, Address, City, Region, PostalCode, Phone, flag) que também sofreu modificações.
 
-```
 
-#### RLS – Row Level Security
 
-```
-A Segurança em nível de linha permite usar o contexto de execução ou a associação de grupo para controlar
-restrições de acesso a linhas de dados. Nesse projeto utilizamos o predicado de filtro de segurança. A 
-lógica dessa restrição de acesso é localizada na camada de banco de dados, em vez de longe dos dados em 
-outra camada de aplicativo. O sistema de banco de dados aplica as restrições de acesso toda vez que há 
-tentativa de acesso a dados a partir de qualquer camada; isso torna o sistema de segurança mais robusto e 
-confiável, reduzindo a área de superfície do sistema de segurança.
+### Trigger
 
-Na implantação dessa tecnologia foi necessário definir uma função com valor de tabela embutida para 
-filtrar o contexto de conexão e permissão no banco de dados para assim adicionar essa função como predicado
-na política e segurança possibilitando silenciosamente filtrar as linhas disponíveis durante a leitura de 
-dados da tabela base ao invés de apagar os dados quando não houver consentimento de uso do cliente.
-```
 
-#### Trigger
+Foram criadas novas triggers que visam gerenciar o consentimento do uso dos dados dos clientes (trg_controla_flag_Company, trg_controla_flag_Customer, trg_controla_flag_People), inclusive verificando se os mesmos são menores de idade, visto que para realizar a tratativa de dados deste é preciso de um termo de responsabilidade assinado pelos responsáveis legais ou documento de emancipação, e registrar o histórico de modificações das permissões concedidas (trg_company_popula_historico_flag, trg_people_popula_historico_flag, trg_popula_historico_flag).
 
-```
-Para armazenar o histórico de permissões, criamos um gatilho que é ativado toda vez que houverem mudanças 
-no consentimento do titular.
-```
+
+
+### RLS (Row Level Security)
+
+
+Foram criadas também novas políticas de segurança que se estendem completamente aos dados dos clientes físicos (PeopleFilter) e jurídicos (CompanyFilter), que atuam em conjunto com a política segurança criada previamente (CustomerFilter), na qual os dados que não obtiveram consentimento do uso por parte do cliente não poderão ser vistos, exceto pelos usuários máximos (app, admin, sa).
+
+
+
+### Novo Modelo Entidade Relacionamento (MER)
+
+<h1 align="center">
+    <img src="novodiagrama.jpg" width="800px"/>
+</h1>
