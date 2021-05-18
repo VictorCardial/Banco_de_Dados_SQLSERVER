@@ -33,5 +33,5 @@ A política de segurança implantada anteriormente se manteve.
 ### Novo Modelo Entidade Relacionamento (MER)
 
 <h1 align="center">
-    <img src="" width="800px"/>
+    <img src="sprint3imagem.png" width="800px"/>
 </h1>
